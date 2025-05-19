@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+            
+    
+    <wb-module deploy-name="CanSecureBankAppClient">
+                        
+        
+        <wb-resource deploy-path="/" source-path="/appClientModule" tag="defaultRootSource"/>
+                
+        <dependent-module archiveName="CanSecureBankAppEJB.jar" deploy-path="/" handle="module:/resource/CanSecureBankAppEJB/CanSecureBankAppEJB">
+                        
+            <dependency-type>uses</dependency-type>
+                    
+        </dependent-module>
+        <dependent-module archiveName="CanSecureBankAppWeb.war" deploy-path="/" handle="module:/resource/CanSecureBankAppWeb/CanSecureBankAppWeb">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+                        
+        
+        <property name="java-output-path" value="/CanSecureBankAppClient/build/classes"/>
+                    
+    
+    </wb-module>
+        
+
+</project-modules>

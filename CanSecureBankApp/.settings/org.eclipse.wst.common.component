@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?><project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="CanSecureBankApp">
+        <wb-resource deploy-path="/" source-path="/EarContent" tag="defaultRootSource"/>
+        <dependent-module archiveName="CanSecureBankAppConnector.rar" deploy-path="/" handle="module:/resource/CanSecureBankAppConnector/CanSecureBankAppConnector">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CanSecureBankAppEJB.jar" deploy-path="/" handle="module:/resource/CanSecureBankAppEJB/CanSecureBankAppEJB">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CanSecureBankAppWeb.war" deploy-path="/" handle="module:/resource/CanSecureBankAppWeb/CanSecureBankAppWeb">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="CanSecureBankAppClient.jar" deploy-path="/" handle="module:/resource/CanSecureBankAppClient/CanSecureBankAppClient">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+    </wb-module>
+</project-modules>
