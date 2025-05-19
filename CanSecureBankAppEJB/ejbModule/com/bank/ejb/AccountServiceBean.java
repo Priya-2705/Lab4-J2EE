@@ -43,4 +43,12 @@ public class AccountServiceBean implements AccountServiceRemote, AccountServiceL
 		// TODO Auto-generated method stub
 		return accountStore.getOrDefault(accountId, 0d);
 	}
+	
+	public static double getAccountBalance(String accountId) {
+	    return accountStore.getOrDefault(accountId, 0.0);
+	}
+
+	public static void updateAccountBalance(String accountId, double newBalance) {
+	    accountStore.put(accountId, newBalance);
+	}
 }
