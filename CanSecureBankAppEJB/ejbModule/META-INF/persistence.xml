@@ -1,0 +1,12 @@
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.0">
+	<persistence-unit name="BankPU" transaction-type="JTA">
+		<jta-data-source>java:/jdbc/BankDS</jta-data-source>
+		<class>com.bank.ejb.model.Customer</class>
+		<class>com.bank.ejb.model.Account</class>
+		<properties>
+			<property name="jakarta.persistence.schema-generation.database.action" value="none" />
+			<property name="hibernate.show_sql" value="true" />
+			<property name="hibernate.format_sql" value="true" />
+		</properties>
+	</persistence-unit>
+</persistence>

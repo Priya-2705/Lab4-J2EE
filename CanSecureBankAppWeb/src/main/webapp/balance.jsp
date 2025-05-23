@@ -7,6 +7,10 @@
 	    <h2>Check Balance</h2>
 	    <form action="bank" method="post">
 	        <input type="hidden" name="action" value="balance"/>
+	    	<label for="accountId">Account No:</label>
+	        <input type="text" name="accountId"/>
+
+	        
 	        <button type="submit">Check Balance</button>
 	    </form>
 	</div>

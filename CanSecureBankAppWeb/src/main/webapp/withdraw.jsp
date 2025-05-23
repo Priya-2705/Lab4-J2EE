@@ -11,12 +11,12 @@
         <form action="bank" method="post">
             <label for="amount">Amount to Withdraw:</label>
             <input type="number" name="amount" step="0.01" required>
+	        <label for="accountId">Account No:</label>
+	        <input type="text" name="accountId"/>
 
             <input type="hidden" name="action" value="withdraw">
             <input type="submit" value="Withdraw">
         </form>
-
-        <br>
         <a href="index.jsp">Back to Home</a>
     </div>
 </body>

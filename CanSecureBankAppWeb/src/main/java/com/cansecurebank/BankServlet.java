@@ -5,84 +5,81 @@ import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.util.Set;
 
 import com.bank.ejb.AccountServiceRemote;
-import com.bank.ejb.TransactionSessionRemote;
+import com.bank.ejb.model.Account;
+import com.bank.ejb.model.Customer;
 
 @WebServlet("/bank")
 public class BankServlet extends HttpServlet {
-    
-    @EJB
-    private AccountServiceRemote accountService; // Stateless bean
 
-    @EJB
-    private TransactionSessionRemote transactionSession; // Stateful bean
+	private static final long serialVersionUID = 1L;
 
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        // Optional: Initialize session with a fixed account
-        transactionSession.beginSession("100045");
-    }
+	@EJB
+	private AccountServiceRemote accountService;
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        String message = "";
-        String accountId = "100045"; // Simulated single-user for now
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        try {
-            if ("deposit".equals(action)) {
-                double amount = Double.parseDouble(request.getParameter("amount"));
-                accountService.deposit(accountId, amount);
-                double updatedBalance = accountService.checkBalance(accountId);
-                message = "Deposited $" + amount + ". New balance: $" + updatedBalance;
+		String action = request.getParameter("action");
+		String message = "";
+		
+		try {
+			switch (action) {
+				case "createCustomer":
+					String name = request.getParameter("name");
+					String email = request.getParameter("email");
+					Customer customer = accountService.createCustomer(name, email);
+					message = "Customer created successfully. ID: " + customer.getCustomerId();
+					break;
 
-            } else if ("balance".equals(action)) {
-                double balance = accountService.checkBalance(accountId);
-                message = "Current balance: $" + balance;
+				case "createAccount":
+					String custId = request.getParameter("customerId");
+					double initialBalance = Double.parseDouble(request.getParameter("initialBalance"));
+					Account account = accountService.createAccount(custId, initialBalance);
+					message = "Account created successfully. ID: " + account.getAccountId();
+					break;
 
-            } else if ("withdraw".equals(action)) {
-                double amount = Double.parseDouble(request.getParameter("amount"));
-                boolean success = accountService.withdraw(accountId, amount);
-                double balance = accountService.checkBalance(accountId);
-                message = success ? "Withdrew $" + amount + ". New balance: $" + balance
-                                  : "Withdrawal failed! Check balance.";
+				case "listAccounts":
+					String listCustId = request.getParameter("customerId");
+					Set<String> accountCodes = accountService.getAccountCodes(listCustId);
+					request.setAttribute("accounts", accountCodes);
+					request.getRequestDispatcher("list.jsp").forward(request, response);
+					return;
 
-            } else if ("depositSession".equals(action)) {
-                double amount = Double.parseDouble(request.getParameter("amount"));
-                transactionSession.deposit(amount);
-                message = "Deposited $" + amount + " in session.";
+				case "deposit":
+					String depositId = request.getParameter("accountId");
+					double depositAmount = Double.parseDouble(request.getParameter("amount"));
+					accountService.deposit(depositId, depositAmount);
+					double newBalance = accountService.checkBalance(depositId);
+					message = "Deposited $" + depositAmount + ". New balance: $" + newBalance;
+					break;
 
-            } else if ("withdrawSession".equals(action)) {
-                double amount = Double.parseDouble(request.getParameter("amount"));
-                boolean success = transactionSession.withdraw(amount);
-                message = success ? "Withdrew $" + amount + " in session." 
-                                  : "Insufficient funds in session.";
+				case "withdraw":
+					String withdrawId = request.getParameter("accountId");
+					double withdrawAmount = Double.parseDouble(request.getParameter("amount"));
+					accountService.withdraw(withdrawId, withdrawAmount);
+					double balanceAfterWithdraw = accountService.checkBalance(withdrawId);
+					message = "Withdrew $" + withdrawAmount + ". New balance: $" + balanceAfterWithdraw;
+					break;
 
-            } else if ("sessionBalance".equals(action)) {
-                double sessionBalance = transactionSession.getSessionBalance();
-                message = "Session balance: $" + sessionBalance;
+				case "balance":
+					String balanceId = request.getParameter("accountId");
+					double balance = accountService.checkBalance(balanceId);
+					message = "Current balance: $" + balance;
+					break;
 
-            } else if ("commit".equals(action)) {
-                transactionSession.commit();
-                message = "Transaction committed successfully.";
+				default:
+					message = "Unknown action!";
+			}
+		} catch (Exception e) {
+			message = "Error occurred: " + e.getMessage();
+			e.printStackTrace();
+		}
 
-            } else if ("cancel".equals(action)) {
-                transactionSession.cancel();
-                message = "Transaction session cancelled.";
-
-            } else if ("startSession".equals(action)) {
-                transactionSession.beginSession(accountId);
-                message = "Transaction session started for Account ID: " + accountId;
-            }
-
-        } catch (Exception e) {
-            message = "Error occurred: " + e.getMessage();
-            e.printStackTrace();
-        }
-
-        request.setAttribute("message", message);
-        request.getRequestDispatcher("result.jsp").forward(request, response);
-    }
+		request.setAttribute("message", message);
+		request.getRequestDispatcher("result.jsp").forward(request, response);
+	}
 }
